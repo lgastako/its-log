@@ -1,0 +1,6 @@
+[#inst "2014-03-10T03:02:50.855-00:00" :info :initializing "AcmeApp v3.13.7"]
+[#inst "2014-03-10T03:02:50.861-00:00" :debug :gexposing {:as "load_users"}]
+[#inst "2014-03-10T03:02:51.407-00:00" :debug :loading-usercache {:count 1037}]
+[#inst "2014-03-10T03:02:51.407-00:00" :debug :loaded-usercache {:count 1037}]
+[#inst "2014-03-10T03:02:51.407-00:00" :warn :usercache {:recommended-size-threshold {:xceeded-by 37}}]
+[#inst "2014-03-10T03:02:53.383-00:00" :debug :autocomplete/view :render-state {:label "Search by substring", :placeholder "", :input-ref "autocomplete"}]
