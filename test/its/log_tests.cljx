@@ -1,4 +1,4 @@
-(ns its.log-test
+(ns its.log-tests
   (:require #+cljs [cemerick.cljs.test :as t :refer-macros [deftest is]]
             #+cljs [cljs.reader :as cljs-reader]
             #+clj [clojure.edn :as edn]
@@ -28,8 +28,11 @@
 (deftest test-with-log-str
   (is (= "laid back\n" (with-log-str #(println "laid back")))))
 
-(def ^:private unstamped (comp vec rest #+clj edn/read-string
-                                        #+cljs cljs-reader/read-string with-log-str))
+(def ^:private read-string
+  #+clj edn/read-string
+  #+cljs cljs-reader/read-string)
+
+(def ^:private unstamped (comp vec rest read-string with-log-str))
 
 (deftest test-basics
   (log/set-level! :debug)

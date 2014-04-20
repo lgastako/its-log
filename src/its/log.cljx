@@ -22,15 +22,21 @@
 (defn reboot! []
   (set-level! default-level))
 
+(def default-emit (comp println pr-str))
+
+(def <log> (atom default-emit))
+
+(def reset-emitter! #(reset! <log> default-emit))
+
 (defn log
-  ([level & args]
-     (assert (valid-level? level))
-     (let [current-level @current-level]
-       (when (and (not= current-level :off)
-                  (>= (index-of levels level)
-                      (index-of levels current-level)))
-         (let [entry (vec (concat [(now) level] args))]
-           (println (pr-str entry)))))))
+  [level & args]
+  (assert (valid-level? level))
+  (let [current-level @current-level]
+    (when (and (not= current-level :off)
+               (>= (index-of levels level)
+                   (index-of levels current-level)))
+      (let [entry (vec (concat [(now) level] args))]
+        (@<log> entry)))))
 
 (def debug (partial log :debug))
 (def info (partial log :info))
