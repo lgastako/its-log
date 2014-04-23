@@ -1,7 +1,6 @@
 (ns its.access_tests
-  #+cljs (:require-macros [cemerick.cljs.test :refer [deftest is testing run-tests]])
-  (:require #+clj [clojure.test :refer [deftest is testing run-tests]]
-            #+cljs [cemerick.cljs.test :as t]
+  (:require #+clj [clojure.test :refer :all]
+            #+cljs [cemerick.cljs.test :as t :refer-macros [deftest is testing]]
             [its.examples :refer [example-log lines]]
             [its.access :as access]))
 
@@ -59,4 +58,4 @@
   (is (= [[#inst "2014-03-10T03:02:53.305-00:00" :error :game :over]]
          (access/errors lines))))
 
-(run-tests)
+;;(run-tests)

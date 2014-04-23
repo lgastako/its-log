@@ -1,6 +1,6 @@
 (ns its.bus-tests
-  (:require #+cljs [cemerick.cljs.test :as t :refer-macros [deftest is]]
-            #+clj [clojure.test :refer :all]
+  (:require #+clj [clojure.test :refer :all]
+            #+cljs [cemerick.cljs.test :as t :refer-macros [deftest is testing]]
             [its.log :as log :refer [log]]
             [its.bus :as bus]))
 
@@ -107,4 +107,5 @@
       (finally (reset-all!)))))
 
 ;;(run-tests)
+
 

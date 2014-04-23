@@ -275,6 +275,11 @@ your current stdout.
 ;; executed, e.g. in the repl.
 ```
 
+### Development
+
+You can get a cljs repl for interactive development by first running the
+trampoline REPL:
+
 ### Implementation / Tradeoffs
 
 For now the concurrency mechanism that backs its.bus in both Clojure and
