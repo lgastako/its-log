@@ -2,7 +2,7 @@
 
 A simple cljx logging library.
 
-![](https://raw.github.com/lgastako/its-log/tmp/resources/log.jpg)
+![](https://raw.github.com/lgastako/its-log/master/resources/log.jpg)
 
 >     No man's knowledge here can go beyond his experience
 >                                        - John Locke
