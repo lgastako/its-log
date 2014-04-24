@@ -12,25 +12,27 @@
                   {:source-paths ["src"]  :output-path "target/gen/src"  :rules :cljs}
                   {:source-paths ["test"] :output-path "target/gen/test" :rules :clj}
                   {:source-paths ["test"] :output-path "target/gen/test" :rules :cljs}]}
-  :cljsbuild {:builds {:dev {:source-paths ["target/dev/gen/src"]
+  :cljsbuild {:builds {:dev {:source-paths ["target/gen/src"]
                              :compiler {:output-to "target/dev/itslog.js"
                                         :output-dir "target/dev"
                                         :optimizations :whitespace
                                         :pretty-print true
                                         :source-map "target/dev/itslog.js.map"}}
-                       :repl {:source-paths ["target/repl/gen/src"]
-                              :compiler {:output-to "resources/public/itslog-repl.js"
-                                         :output-dir "resources/public"
-                                         :optimizations :whitespace
-                                         :pretty-print true
-                                         :source-map "resources/public/itslog.js.map"}}
-                       :test {:source-paths ["target/test/gen/src"
-                                             "target/test/gen/test"]
+                       :test {:source-paths ["target/gen/src"
+                                             "target/gen/test"]
                               :compiler {:output-to "target/test/tests.js"
                                          :output-dir "target/test"
                                          :optimizations :whitespace
                                          :pretty-print true
-                                         :source-map "target/test/tests.js.map"}}}
+                                         :source-map "target/test/tests.js.map"}}
+                       :repl {:source-paths ["dev"
+                                             "target/gen/src"
+                                             "target/gen/test"]
+                              :compiler {:output-to "resources/public/itslog-repl.js"
+                                         :output-dir "resources/public"
+                                         :optimizations :whitespace
+                                         :pretty-print true
+                                         :source-map "resources/public/itslog.js.map"}}}
               :test-commands {"phantomjs" ["phantomjs"
                                            :runner
                                            "bind-polyfill.js"
@@ -38,7 +40,8 @@
   :source-paths ["src" "target/gen/src"]
   :test-paths ["test" "target/gen/test"]
   :profiles {:repl {:source-paths ["dev"]
-                    :dependencies [[ring "1.2.2"]]
+                    :dependencies [[ring "1.2.2"]
+                                   [compojure "1.1.6"]]
                     :main ^:skip-aot its.devserver}}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-2173"]
