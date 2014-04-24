@@ -10,21 +10,13 @@
 
 #+cljs (defn with-log-str [f]
          (let [orig-log-fn *print-fn*
-               make-log-str #(-> %
-                                 (partial map pr-str)
-                                 (partial string/join " ")
-                                 (str "\n"))
                messages (atom [])
+               make-log-str #(str (string/join "" (map pr-str %)) "\n")
                shim (fn [& args]
                       (apply orig-log-fn args)
                       (swap! messages conj (make-log-str args)))]
-           (set! *print-fn* shim)
-           (try
-             (f)
-             (catch js/Error ex
-               (swap! messages conj (make-log-str [ex])))
-             (finally
-               (set! *print-fn* orig-log-fn)))
+           (with-redefs [*print-fn* shim]
+             (f))
            (string/join "\n" @messages)))
 
 (deftest test-with-log-str
