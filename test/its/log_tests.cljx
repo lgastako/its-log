@@ -21,6 +21,8 @@
            (set! *print-fn* shim)
            (try
              (f)
+             (catch js/Error ex
+               (swap! messages conj (make-log-str [ex])))
              (finally
                (set! *print-fn* orig-log-fn)))
            (string/join "\n" @messages)))
