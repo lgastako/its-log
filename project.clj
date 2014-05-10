@@ -1,4 +1,4 @@
-(defproject its-log "0.2.1"
+(defproject its-log "0.2.2"
   :description "It's Log.  Logging that's better than bad -- it's good!"
   :url "http://github.com/lgastako/its-log"
   :license {:name "Eclipse Public License"
