@@ -1,6 +1,8 @@
 (ns its.bus-tests
   (:require #+clj [clojure.test :refer :all]
             #+cljs [cemerick.cljs.test :as t :refer-macros [deftest is testing]]
+            #+clj [clojure.core.async :as async :refer [<!! <! >! go]]
+            #+cljs [cljs.core.async :as async :refer [<! >!]]
             [its.log :as log :refer [log]]
             [its.bus :as bus]))
 
@@ -106,6 +108,34 @@
 
       (finally (reset-all!)))))
 
-;;(run-tests)
+(deftest logging-from-a-thread
+  (log/set-level! :debug)
+  (bus/replace!)
+  (bus/collect)
+  (bus/pop-collected!)
+  (log/debug :local 1)
+  (let [t (Thread. #(log/debug :thread 1))]
+    (.start t)
+    (.join t))
+  (log/debug :local 2)
+  (let [lines (vec  (map (comp vec rest) (bus/collected)))]
+    (is (= lines [[:debug :local 1]
+                  [:debug :thread 1]
+                  [:debug :local 2]]))))
+
+#+clj (deftest logging-from-a-channel
+        (log/set-level! :debug)
+        (bus/replace!)
+        (bus/collect)
+        (bus/pop-collected!)
+        (log/debug :local 1)
+        (<!! (go (log/debug :channel 1)))
+        (log/debug :local 2)
+        (let [lines (vec  (map (comp vec rest) (bus/collected)))]
+          (is (= lines [[:debug :local 1]
+                        [:debug :channel 1]
+                        [:debug :local 2]]))))
+
+(run-tests)
 
 

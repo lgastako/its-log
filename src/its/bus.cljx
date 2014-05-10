@@ -49,6 +49,9 @@
     (reset! collection [])
     result))
 
+(defn collect []
+  (watch! :collect collector))
+
 (def ^:private auto-watch-sequence (atom 0))
 
 (defn watch
