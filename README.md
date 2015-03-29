@@ -32,7 +32,7 @@ Assuming we don't have to sacrafice simplicity I want things to be as extensible
 as possible.  I think I've acheived this as well as can reasonably be
 accomplished right now with the its.log/&lt;log&gt; atom.
 
-The its.log/<log> dynamic variable is where the rubber meets the road in terms
+The its.log/&lt;log&gt; dynamic variable is where the rubber meets the road in terms
 of a log entry being "emitted."  The ultimate goal of a call to one of its-log's
 logging functions is to have a log entry emitted.
 
