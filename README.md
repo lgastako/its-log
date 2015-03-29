@@ -30,7 +30,7 @@ as possible, as few options as possible, etc.
 
 Assuming we don't have to sacrafice simplicity I want things to be as extensible
 as possible.  I think I've acheived this as well as can reasonably be
-accomplished right now with the its.log/<log> atom.
+accomplished right now with the its.log/&lt;log&gt; atom.
 
 The its.log/<log> dynamic variable is where the rubber meets the road in terms
 of a log entry being "emitted."  The ultimate goal of a call to one of its-log's
@@ -43,14 +43,14 @@ A log entry is the edn representation of the logging event.  Something like:
 ```
 
 When its-log needs to emit a log entry, it calls the unary function stored in
-the its.log/<log> atom.  The default function is `(comp println pr-str)` which
+the its.log/&lt;log&gt; atom.  The default function is `(comp println pr-str)` which
 formats the arguments using pr-str then prints them using println.
 
 You can replace this function with any function you want to have complete
 control over anything you want, including formatting or destination of logs,
 etc.
 
-For example, the its-log logging operates by swapping in it's own its.log/<log>
+For example, the its-log logging operates by swapping in it's own its.log/&lt;log&gt;
 logging function.
 
 ## Tradeoffs
