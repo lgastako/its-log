@@ -99,8 +99,7 @@ entry.  Order is not guaranteed.
 Right now its-log depends on core.async.  If you aren't interested in using
 core.async you can exclude them in your project.clj with something like:
 
-  ...
-  :dependencies [its-log "x.x.x" :exclusions [org.clojure/core.async]]
+    :dependencies [its-log "x.x.x" :exclusions [org.clojure/core.async]]
 
 TODO: I think... test if this does what I think it does.
 
