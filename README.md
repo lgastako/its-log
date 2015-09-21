@@ -9,7 +9,9 @@ A simple Clojure/ClojureScript logging library.
 
 ## Usage
 
-Add `[its-log "3.0"]` to the `:dependencies` section of your `project.clj`.
+To use `its-log`, add the following to the `:dependencies` of your `project.clj`:
+
+    [its-log "3.0"]
 
 Then require its-log, in a namespace:
 
@@ -45,13 +47,14 @@ Usage is the same from either Clojure or ClojureScript:
 ## Features
 
 * Simplicity
-* Logs are (Clojure) data structures.
+* Logs are Clojure data structures.
 * Identical API and semantics from Clojure and ClojureScript.
 * Automatically enables console println in ClojureScript.
 * Automatically enables node console println when running under nodejs.
 * Simple standard logging levels: `:debug`, `:info`, `:warning`, `:error`, and `:off`
 * Change log levels at runtime
 * Add/remove/replace loggers (destinations) at runtime
+* Helpers for parsing logs and accessing individual fields
 
 ### Setting Up Loggers
 
@@ -343,6 +346,6 @@ Assuming the lines from the test namespace `its.examples`:
 ```
 ## License
 
-Copyright © 2014 John Evans
+Copyright © 2014-2015 John Evans
 
 Distributed under the Eclipse Public License, the same as Clojure.
