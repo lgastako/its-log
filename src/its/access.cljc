@@ -13,7 +13,7 @@
 (def warn? (partial is-level :warn))
 (def error? (partial is-level :error))
 
-(def debugs (partial filter debug?))
-(def infos (partial filter info?))
-(def warns (partial filter warn?))
-(def errors (partial filter error?))
+(def debugs (partial filterv debug?))
+(def infos (partial filterv info?))
+(def warns (partial filterv warn?))
+(def errors (partial filterv error?))

@@ -3,6 +3,8 @@
             #?(:cljs [cemerick.cljs.test :as t :refer-macros [deftest is]])
             #?(:clj [clojure.edn :as edn])
             #?(:cljs [cljs.reader :as cljs-reader])
+            #?(:clj  [clojure.core.async :as async :refer [>! alts! timeout <!! go]])
+            #?(:cljs [cljs.core.async    :as async :refer [>! alts! timeout]])
             [clojure.string :as string]
             [its.log :as log :refer [log]]
             [its.loggers :as loggers]))
@@ -40,5 +42,28 @@
 (defn log-to [dst]
   (fn [entry]
     (swap! dst conj entry)))
+
+;; Credit to Leon Grapenthin from:
+;; http://stackoverflow.com/questions/30766215/how-do-i-unit-test-clojure-core-async-go-macros
+
+(defn test-async
+  "Asynchronous test awaiting ch to produce a value or close."
+  [ch]
+  #?(:clj
+     (<!! ch)
+     :cljs
+     (async done
+            (take! ch (fn [_] (done))))))
+
+(defn test-within
+  "Asserts that ch does not close or produce a value within ms. Returns a
+  channel from which the value can be taken."
+  [ms ch]
+  (go (let [t (timeout ms)
+            [v ch] (alts! [ch t])]
+        (is (not= ch t)
+            (str "Test should have finished within " ms "ms."))
+        v)))
+
 
 ;; (run-tests)

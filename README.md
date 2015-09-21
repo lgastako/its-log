@@ -285,6 +285,59 @@ or `parse/log` if you have a string (e.g. read from a file) of concatenated log 
 ;;     [#inst "2014-03-10T03:02:53.383-00:00" :debug :autocomplete/view :render-state {:label "Search by substring", :placeholder "", :input-ref "autocomplete"}]]
 ```
 
+## Accessing parts of log lines as clojure data structures
+
+Once you have log lines as clojure data structures the `its.access` namespace
+provides helpers for easy access to the individual fields:
+
+Do the usual require dance in your namespace:
+
+```clojure
+(ns your.app
+  (:require [its.access :as access]))
+```
+
+or the REPL:
+
+```clojure
+(require '[its.access :as access])
+```
+
+And then, assuming:
+
+```clojure
+(def line [#inst "2014-03-10T03:02:51.407-00:00" :debug :loading-usercache {:count 1037}])
+```
+
+You can access the individual pieces like so:
+
+```clojure
+(access/timestamp line)  ;; => #inst "2014-03-10T03:02:51.407-00:00"
+(access/level line)      ;; => :debug
+(access/message line)    ;; => :loading-usercache
+(access/args line)       ;; => [{:count 1037}]
+```
+
+Or check for specific levels:
+
+```clojure
+(access/debug? line)   ;; => true
+(access/info? line)    ;; => true
+(access/warn? line)    ;; => true
+(access/error? line)   ;; => true
+```
+
+Or use the plural versions to filter lists of lines:
+
+Assuming the lines from the test namespace `its.examples`:
+
+```clojure
+(access/debugs lines)
+;; => [[#inst "2014-03-10T03:02:51.407-00:00" :debug :loading-usercache {:count 1037}]]
+
+(access/warns lines)
+;; => [[#inst "2014-03-10T03:02:52.702-00:00" :warn :the-roof [:the-roof] [[:the-roof]] {:is :on-fire}]]
+```
 ## License
 
 Copyright © 2014 John Evans
