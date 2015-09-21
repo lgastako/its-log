@@ -232,7 +232,6 @@ level helpers directly, something like:
 (ns my.app
   (:require [its.log :as log :refer [log debug warn info error]]))
 
-;; Now you can...
 (log :debug "whatever")
 (debug "whatever else")
 (info "Some handy info")
@@ -242,17 +241,20 @@ level helpers directly, something like:
 
 ## Core.Async
 
+You can create a logger that will write log messages to a `core.async` channel
+like so:
+
 ```clojure
 (ns your.ns
  :require [its.async :as async-log])
           [its.log :as log])
 
-(let [log-chan ...]
+(let [log-chan (chan)]
   (log/set-logger :async (async-log/make log-chan))
   ...)
 ```
 
-## Parsing
+## Parsing Logs
 
 The functions in the `its.parse` namespace are helpful for parsing logs
 produced by `its.log` back into Clojure data structures.
