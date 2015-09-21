@@ -1,4 +1,4 @@
-(defproject its-log "0.2.2"
+(defproject its-log "3.0.0"
   :description "It's Log.  Logging that's better than bad -- it's good!"
   :url "http://github.com/lgastako/its-log"
   :license {:name "Eclipse Public License"
@@ -10,7 +10,8 @@
                               :test-paths ["test"]
                               :compiler {:output-to "target/itslog.js"
                                          :optimizations :whitespace
-                                         :pretty-print true}}}}
+                                         :pretty-print true
+                                         :target :nodejs}}}}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.clojure/clojurescript "1.7.48"]
+                 [org.clojure/clojurescript "1.7.122"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]])
