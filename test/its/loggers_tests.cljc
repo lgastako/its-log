@@ -1,11 +1,12 @@
-(ns its.logger-tests
+(ns its.loggers-tests
   (:require #?(:clj [clojure.test :refer :all])
             #?(:cljs [cemerick.cljs.test :as t :refer-macros [deftest is]])
             #?(:clj [clojure.edn :as edn])
             #?(:cljs [cljs.reader :as cljs-reader])
             [clojure.string :as string]
             [its.log :as log :refer [log]]
-            [its.loggers :as loggers :refer [loggers]]))
+            [its.loggers :as loggers :refer [loggers]]
+            [its.test-helpers :refer [log-to without-timestamps]]))
 
 (deftest test-set
   (testing "setting a new logger"
