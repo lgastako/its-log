@@ -24,35 +24,61 @@ or in the REPL:
 (require '[its.log :as log])
 ```
 
+At the most basic level its-log presents a fairly standard interface similar to
+most other logging systems.
+
+Usage is the same from either Clojure or ClojureScript:
+
+```clojure
+(log/set-level! :debug)  ;; default is warning
+(log/debug "This is a debug message.  It will be seen.")
+
+(log/set-level! :info)
+(log/debug "This is a debug message.  It will NOT be seen.")
+
+(log/error "This is an error message.  It will be seen.")
+
+(log/set-level! :off)
+(log/error "This is an error that will not be seen.  How sad.")
+```
+
 ## Features
 
 * Simplicity
 * Logs are (Clojure) data structures.
 * Identical API and semantics from Clojure and ClojureScript.
 * Automatically enables console println in ClojureScript.
+* Automatically enables node console println when running under nodejs.
 * Simple standard logging levels: `:debug`, `:info`, `:warning`, `:error`, and `:off`
 * Change log levels at runtime
+* Add/remove/replace loggers (destinations) at runtime
 
-### Major Changes from 2.0
-
-* No more `its.bus`.
-* The `<log>` atom has been replaced by logger map and `set-logger`, `remove-logger`, etc.
-
-### Extensibility
+### Setting Up Loggers
 
 its-log v3 replaces the `<log>` atom from v2 with the notion of registering
 loggers.  Loggers are identified by keywords.  By default a logger is
 registered at `:its.log/default` that logs using `println`.
 
-To set loggers, first require the its.loggers
+To set loggers, first require the `its.loggers` namespace in your app:
 
-To disable the default logger `(remove-logger :its.log/default)`.
+```clojure
+(ns your.app
+  :require [its.loggers :as loggers])
+```
 
-To register a new logger: `(set-logger :my/logger foo-logger)`
+Or the REPL:
+
+```clojure
+(require '[its.loggers :as loggers])
+```
+
+To disable the default logger `(loggers/remove :its.log/default)`.
+
+To register a new logger: `(loggers/set :my/logger foo-logger)`
 
 Registering a new logger to the same key will replace the old one.
 
-You can also use `(loggers/clear)
+You can also use `(loggers/clear)` to clear all loggers.
 
 ## Log Entries
 
@@ -62,13 +88,13 @@ A log entry is the edn representation of the logging event.  Something like:
 [#inst "2014-04-22T02:04:40.074-00:00" :debug :foo :bar :baz :bif {:bam :boom}]
 ```
 
-When its-log needs to emit a log entry it calls each registered logger with the entry.
+When its-log needs to emit a log entry it calls each registered logger with the
+entry.  Order is not guaranteed.
 
 ## Dependencies
 
-Right now its-log depends on ClojureScript and core.async.  If you aren't
-interested in one or the other or both you can exclude them in your project.clj
-with something like:
+Right now its-log depends on core.async.  If you aren't interested in using
+core.async you can exclude them in your project.clj with something like:
 
   ...
   :dependencies [its-log "x.x.x" :exclusions [org.clojure/core.async]]
@@ -86,36 +112,13 @@ like an enterprise app running out of Immutant or another environment which has
 specific requirements for a logging system that its-log doesn't support
 (e.g. requiring log rotation or redirection, etc).
 
-You might find its-bus helpful specifically in situations like a multithreaded
+You might find its-log helpful specifically in situations like a multithreaded
 environment where stdout is lost.
 
 There is one common case where it will not work well right now which is in web
 workers.  Right now each web worker gets it's own isolated bus and the messages
 in the web workers never see the light of day.  I intend to fix this webworker
 issue when/if it becomes pressing in my work.  Pull requests welcome :)
-
-## Usage
-
-At the most basic level its-log presents a fairly standard interface similar to
-most other logging systems.
-
-Usage is the same from either Clojure or ClojureScript:
-
-```clojure
-(ns my.app
-  (:require [its.log :as log]))
-
-(log/set-level! :debug)  ;; default is warning
-(log/debug "This is a debug message.  It will be seen.")
-
-(log/set-level! :info)
-(log/debug "This is a debug message.  It will NOT be seen.")
-
-(log/error "This is an error message.  It will be seen.")
-
-(log/set-level! :off)
-(log/error "This is an error that will not be seen.  How sad.")
-```
 
 ### Logs as Data
 
