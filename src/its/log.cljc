@@ -2,13 +2,16 @@
   (:require [clojure.string :as string]
             [its.compat :refer [now index-of]]))
 
-#+cljs (enable-console-print!)
+#?@(:cljs [(enable-console-print!)
+           (try
+             (nodejs/enable-util-print!)
+             (catch :default _))])
 
 (def levels [:debug :info :warn :error :off])
 
 (def default-level :warn)
 
-(def ^:private current-level (atom default-level))
+(def current-level (atom default-level))
 
 (defn level [] @current-level)
 
@@ -22,11 +25,15 @@
 (defn reboot! []
   (set-level! default-level))
 
-(def default-emit (comp println pr-str))
+(def default-logger (comp println pr-str))
 
-(def <log> (atom default-emit))
+(def loggers (atom {::default default-logger}))
 
-(def reset-emitter! #(reset! <log> default-emit))
+(defn set-logger [key logger]
+  (swap! loggers assoc key logger))
+
+(defn remove-logger [key]
+  (swap! loggers dissoc key))
 
 (defn log
   [level & args]
@@ -36,11 +43,12 @@
                (>= (index-of levels level)
                    (index-of levels current-level)))
       (let [entry (vec (concat [(now) level] args))]
-        (@<log> entry)))))
+        (doseq [[_ logger] @loggers]
+          (logger entry))))))
 
 (def debug (partial log :debug))
-(def info (partial log :info))
-(def warn (partial log :warn))
+(def info  (partial log :info))
+(def warn  (partial log :warn))
 (def error (partial log :error))
 
 (log :info :its.log {:activated-at (now)})

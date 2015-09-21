@@ -1,6 +1,6 @@
-(ns its.access_tests
-  (:require #+clj [clojure.test :refer :all]
-            #+cljs [cemerick.cljs.test :as t :refer-macros [deftest is testing]]
+(ns its.access-tests
+  (:require #?(:clj [clojure.test :refer :all])
+            #?(:cljs [cljs.test :as t :refer-macros [deftest is testing]])
             [its.examples :refer [example-log lines]]
             [its.access :as access]))
 

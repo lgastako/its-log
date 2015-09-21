@@ -1,40 +1,54 @@
 # its-log
 
-A simple cljx logging library.
+A simple Clojure/ClojureScript logging library.
 
 ![](https://raw.github.com/lgastako/its-log/master/resources/log.jpg)
 
 >     No man's knowledge here can go beyond his experience
 >                                        - John Locke
 
+## Usage
+
+Add `[its-log "3.0"]` to the `:dependencies` section of your `project.clj`.
+
+Then require its-log, in a namespace:
+
+```clojure
+(ns your.app
+  :require [its.log :as log])
+  ```
+
+or in the REPL:
+
+```clojure
+(require '[its.log :as log])
+```
+
 ## Features
 
+* Simplicity
 * Logs are (Clojure) data structures.
 * Identical API and semantics from Clojure and ClojureScript.
 * Automatically enables console println in ClojureScript.
 * Simple standard logging levels: `:debug`, `:info`, `:warning`, `:error`, and `:off`
 * Change log levels at runtime
-* its.bus: (optional) Shared logging bus
 
-## Goals
+### Major Changes from 2.0
 
-I am trying to keep a few explicit goals in mind as its-log evolves.
-
-### Simplicity
-
-My primary goal with its-log is to keep things as simple as possible.  I want as
-little code as possible with as little surface area as possible, as few concepts
-as possible, as few options as possible, etc.
+* No more `its.bus`.
+*
 
 ### Extensibility
 
-Assuming we don't have to sacrafice simplicity I want things to be as extensible
-as possible.  I think I've acheived this as well as can reasonably be
-accomplished right now with the its.log/&lt;log&gt; atom.
+its-log v3 replaces the `<log>` atom from v2 with the notion of registering
+loggers.  Loggers are identified by keywords.  By default a logger is
+registered at `:its.log/default` that logs using `println`.
 
-The its.log/&lt;log&gt; dynamic variable is where the rubber meets the road in terms
-of a log entry being "emitted."  The ultimate goal of a call to one of its-log's
-logging functions is to have a log entry emitted.
+To disable the default logger `(remove-logger :its.log/default)`.
+
+To register a new logger: `(register-logger :my/logger foo-logger)`
+
+## Log Entries
 
 A log entry is the edn representation of the logging event.  Something like:
 
@@ -42,32 +56,7 @@ A log entry is the edn representation of the logging event.  Something like:
 [#inst "2014-04-22T02:04:40.074-00:00" :debug :foo :bar :baz :bif {:bam :boom}]
 ```
 
-When its-log needs to emit a log entry, it calls the unary function stored in
-the its.log/&lt;log&gt; atom.  The default function is `(comp println pr-str)` which
-formats the arguments using pr-str then prints them using println.
-
-You can replace this function with any function you want to have complete
-control over anything you want, including formatting or destination of logs,
-etc.
-
-For example, the its-log logging operates by swapping in it's own its.log/&lt;log&gt;
-logging function.
-
-## Tradeoffs
-
-Striving for simplicity I am intentionally avoiding many areas of log related
-concerns (at least for now).
-
-Specifically, its-log:
-
-* Does not do anything clever like take advantage of macros to remove the code
-  completely when the log level is set too low, prefering instead simplicity of
-  implementation and the ability to change log level at run time.
-* Only provides two types of basic loggers:
-  - println
-  - its.bus
-  (...but trivially easy to extend in Clojure and/or ClojureScript!)
-* Provides nothing for log rotation (or anything to do with files really).
+When its-log needs to emit a log entry it calls each registered logger with the entry.
 
 ## Dependencies
 
@@ -97,7 +86,7 @@ environment where stdout is lost.
 There is one common case where it will not work well right now which is in web
 workers.  Right now each web worker gets it's own isolated bus and the messages
 in the web workers never see the light of day.  I intend to fix this webworker
-issue when it becomes pressing in my work.
+issue when/if it becomes pressing in my work.  Pull requests welcome :)
 
 ## Usage
 
@@ -186,7 +175,7 @@ corresponding to those same four levels: `log/debug`, `log/info`, `log/warn` and
 `log/error`.  These (and/or the its.bus versions) are how I log the vast
 majority of the time.
 
-Behind the scenes, these are calling log/log which just takes one of the four
+Behind the scenes, these are calling `log/log` which just takes one of the four
 log level keywords as it's first argument, e.g.:
 
 ```clojure
@@ -228,72 +217,17 @@ level helpers directly, something like:
 (error "You didn't listen, did you?")
 ```
 
-## its.bus: The Shared Logging Bus
-
-You can activate its.bus with either the bus/replace! or bus/wrap! functions.
-
-replace! installs a logging handler that routes messages only to the shared
-logging bus.
-
-wrap! installs a logging handler that sends messages both to the shared logging
-bus and then to the original handler.
-
-For example, in a scenario where no other configuration of the logging system
-has taken place, a call to replace! will prevent any logging messages from
-appearing on any stdout anywhere.  And in fact until you tap the bus all logging
-messages will fall into the bit bucket.
-
-### Tapping that bus
-
-To bring back stdout logging after, eg., its.bus/replace!-ing you can bus/watch!:
+## Core.Async
 
 ```clojure
-(bus/watch!)
+(ns your.ns
+ :require [its.async :as async-log])
+          [its.log :as log])
+
+(let [log-chan ...]
+  (log/set-logger :async (async-log/make log-chan))
+  ...)
 ```
-
-This actually has a slightly different effect than using its.bus/wrap!
-
-For example, if you wrap! the logger in a multithreaded application where you
-are only seeing logging from one of the threads on stdout then after wrap!-ing
-you will still not see the log messages from the other threads.  If on the other
-hand you replace! then bus/watch! you'll see all messages from all threads on
-your current stdout.
-
-### Tapping that bus... async style:
-
-```clojure
-(ns your.app
-  (require [its.bus.async :refer [chan]]))
-
-;; Manually log messages from its.bus via println via a go block for
-;; demonstration purposes.
-(let [logs (bus/chan)]
-  (go (while true (println (<! logs)))))
-
- Control will resume here immediately, but from now on everything that hits
-;; the bus will be printed via println on the stdout of whatever that code was
-;; executed, e.g. in the repl.
-```
-
-### Development
-
-You can get a cljs repl for interactive development by first running the
-trampoline REPL:
-
-### Implementation / Tradeoffs
-
-For now the concurrency mechanism that backs its.bus in both Clojure and
-ClojureScript is our stalwart friend the atom.
-
-I had nearly implemented a first version based on `alter-var-root` before
-realizing that ClojureScript doesn't have `alter-var-root`.  Doh.
-
-I thought maybe I'll leave it in the Clojure version and in the ClojureScript
-version use an atom or something else.  But then I thought, the atom will be
-easy, good enough, and work nearly identically in both, so the atom it is.
-
-I welcome any suggestions (or pull requests...) for better alternatives that
-don't require ridiculous cljx contortions.
 
 ## Parsing
 
