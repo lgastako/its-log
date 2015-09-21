@@ -4,31 +4,11 @@
             #?(:clj [clojure.edn :as edn])
             #?(:cljs [cljs.reader :as cljs-reader])
             [clojure.string :as string]
-            [its.log :as log :refer [log]]))
-
-#?(:clj (defn with-log-str [f] (with-out-str (f))))
-
-#?(:cljs (defn with-log-str [f]
-            (let [orig-log-fn *print-fn*
-                  messages (atom [])
-                  make-log-str #(str (string/join "" (map pr-str %)) "\n")
-                  shim (fn [& args]
-                         (apply orig-log-fn args)
-                         (swap! messages conj (make-log-str args)))]
-              (with-redefs [*print-fn* shim]
-                (f))
-              (string/join "\n" @messages))))
-
-(deftest test-with-log-str
-  (is (= "laid back\n" (with-log-str #(println "laid back")))))
-
-(def str->clj
-  #?(:clj edn/read-string)
-  #?(:cljs cljs-reader/read-string))
-
-(def unstamped (comp vec rest str->clj with-log-str))
+            [its.log :as log :refer [log]]
+            [its.loggers :as loggers]))
 
 (deftest test-basics
+  (loggers/set-default)
   (log/set-level! :debug)
   (is (= [:debug "gin and juice"]
          (unstamped #(log :debug "gin and juice"))))
@@ -66,5 +46,5 @@
          (map (fn [level] (unstamped #(log level "beibs")))
               (butlast log/levels)))))
 
-;;(run-tests)
 
+;; (run-tests)

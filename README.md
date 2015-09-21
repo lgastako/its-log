@@ -36,7 +36,7 @@ or in the REPL:
 ### Major Changes from 2.0
 
 * No more `its.bus`.
-*
+* The `<log>` atom has been replaced by logger map and `set-logger`, `remove-logger`, etc.
 
 ### Extensibility
 
@@ -44,9 +44,15 @@ its-log v3 replaces the `<log>` atom from v2 with the notion of registering
 loggers.  Loggers are identified by keywords.  By default a logger is
 registered at `:its.log/default` that logs using `println`.
 
+To set loggers, first require the its.loggers
+
 To disable the default logger `(remove-logger :its.log/default)`.
 
-To register a new logger: `(register-logger :my/logger foo-logger)`
+To register a new logger: `(set-logger :my/logger foo-logger)`
+
+Registering a new logger to the same key will replace the old one.
+
+You can also use `(loggers/clear)
 
 ## Log Entries
 
@@ -231,7 +237,53 @@ level helpers directly, something like:
 
 ## Parsing
 
-    Still coming soon.
+The functions in the `its.parse` namespace are helpful for parsing logs
+produced by `its.log` back into Clojure data structures.
+
+First, require the `its.parse` namespace, in your namespace:
+
+```clojure
+(ns your.app
+  :require [its.parse :as parse])
+```
+
+or in the REPL:
+
+```clojure
+(require '[its.parse :as parse])
+```
+
+Use `parse/line` to parse a single log line and get back a single Clojure
+vector representing that line:
+
+```clojure
+(parse/line "[#inst "2014-03-10T03:02:50.855-00:00" :info :initializing \"AcmeApp v3.13.7\"]")
+
+;; => [#inst "2014-03-10T03:02:50.855-00:00" :info :initializing \"AcmeApp v3.13.7\"]
+```
+
+or `parse/line` if you have a sequence of lines:
+
+```clojure
+(parse/lines ["[#inst "2014-03-10T03:02:50.855-00:00" :info :initializing \"AcmeApp v3.13.7\"]"
+              "[#inst "2014-03-10T03:02:50.861-00:00" :debug :gexposing {:as \"load_users\"}]"])
+
+;; => [[#inst "2014-03-10T03:02:50.855-00:00" :info :initializing "AcmeApp v3.13.7"]
+;;     [#inst "2014-03-10T03:02:50.861-00:00" :debug :gexposing {:as "load_users"}]]
+```
+
+or `parse/log` if you have a string (e.g. read from a file) of concatenated log strings:
+
+```clojure
+(parse/log (slurp "example.log"))
+
+;; => [[#inst "2014-03-10T03:02:50.855-00:00" :info :initializing "AcmeApp v3.13.7"]
+;;     [#inst "2014-03-10T03:02:50.861-00:00" :debug :gexposing {:as "load_users"}]
+;;     [#inst "2014-03-10T03:02:51.407-00:00" :debug :loading-usercache {:count 1037}]
+;;     [#inst "2014-03-10T03:02:51.407-00:00" :debug :loaded-usercache {:count 1037}]
+;;     [#inst "2014-03-10T03:02:51.407-00:00" :warn :usercache {:recommended-size-threshold {:xceeded-by 37}}]
+;;     [#inst "2014-03-10T03:02:53.383-00:00" :debug :autocomplete/view :render-state {:label "Search by substring", :placeholder "", :input-ref "autocomplete"}]]
+```
 
 ## License
 

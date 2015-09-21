@@ -1,11 +1,14 @@
 (ns its.log
   (:require [clojure.string :as string]
-            [its.compat :refer [now index-of]]))
+            [its.compat :refer [now index-of]]
+            [its.loggers :refer [loggers]]))
 
-#?@(:cljs [(enable-console-print!)
-           (try
-             (nodejs/enable-util-print!)
-             (catch :default _))])
+#?(:cljs
+   (do
+     (enable-console-print!)
+     (try
+       (nodejs/enable-util-print!)
+       (catch :default _))))
 
 (def levels [:debug :info :warn :error :off])
 
@@ -21,19 +24,6 @@
 (defn set-level! [level]
   (assert (valid-level? level))
   (reset! current-level level))
-
-(defn reboot! []
-  (set-level! default-level))
-
-(def default-logger (comp println pr-str))
-
-(def loggers (atom {::default default-logger}))
-
-(defn set-logger [key logger]
-  (swap! loggers assoc key logger))
-
-(defn remove-logger [key]
-  (swap! loggers dissoc key))
 
 (defn log
   [level & args]

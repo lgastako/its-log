@@ -10,6 +10,8 @@
 
 (def lines (partial map line))
 
+(def log (comp lines string/split-lines))
+
 (def string (comp lines #(string/split % #"\n")))
 
 (def slurp (comp vec string clojure.core/slurp))

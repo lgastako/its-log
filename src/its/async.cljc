@@ -4,5 +4,4 @@
   #?(:cljs (:require-macros [cljs.core.async.macros :refer [go]])))
 
 (defn make-log
-  ([]  (make-log (chan)))
   ([c] (partial put! c)))

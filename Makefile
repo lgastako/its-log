@@ -1,12 +1,15 @@
 # workaround for https://github.com/technomancy/leiningen/issues/1940
-NAMESPACES=its.log \
-		   its.async \
-		   its.access \
-		   its.compat \
-		   its.parse \
+NAMESPACES=its.access \
 		   its.access-tests \
-		   its.log-tests
-#		   its.bus-tests \
+		   its.async \
+		   its.async-test \
+		   its.compat \
+		   its.log \
+		   its.log-tests \
+		   its.logger \
+		   its.logger-tests \
+		   its.parse \
+		   its.parse-tests
 
 all: # This is a self documenting Makefile
 	@cat Makefile
