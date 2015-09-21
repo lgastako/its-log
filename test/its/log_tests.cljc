@@ -5,7 +5,8 @@
             #?(:cljs [cljs.reader :as cljs-reader])
             [clojure.string :as string]
             [its.log :as log :refer [log]]
-            [its.loggers :as loggers]))
+            [its.loggers :as loggers]
+            [its.test-helpers :refer [unstamped]]))
 
 (deftest test-basics
   (loggers/set-default)

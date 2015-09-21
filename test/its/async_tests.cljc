@@ -1,7 +1,7 @@
 (ns its.async-tests
   (:require #?(:clj  [clojure.test :refer :all])
             #?(:cljs [cljs.test :as t :refer-macros [async deftest is testing]])
-            #?(:clj  [clojure.core.async :as async :refer [<! >! chan put!]])
+            #?(:clj  [clojure.core.async :as async :refer [<! >! chan put! go]])
             #?(:cljs [cljs.core.async    :as async :refer [<! >! chan put!] :refer-macros [go]])
             [its.async :as alog]
             [its.log :as log]

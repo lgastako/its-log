@@ -2,12 +2,12 @@
 NAMESPACES=its.access \
 		   its.access-tests \
 		   its.async \
-		   its.async-test \
+		   its.async-tests \
 		   its.compat \
 		   its.log \
 		   its.log-tests \
-		   its.logger \
-		   its.logger-tests \
+		   its.loggers \
+		   its.loggers-tests \
 		   its.parse \
 		   its.parse-tests
 
