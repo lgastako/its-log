@@ -7,7 +7,7 @@
    (do
      (enable-console-print!)
      (try
-       (nodejs/enable-util-print!)
+       (.enable-util-print! js/cljs.nodejs)
        (catch :default _))))
 
 (def levels [:debug :info :warn :error :off])

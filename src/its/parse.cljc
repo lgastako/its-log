@@ -1,5 +1,5 @@
 (ns its.parse
-  (:refer-clojure :exclude [slurp])
+  #?(:clj  (:refer-clojure :exclude [slurp]))
   (:require [clojure.string :as string]
             #?(:clj [clojure.edn :as edn])
             #?(:cljs [cljs.reader :as cljs-reader])))
