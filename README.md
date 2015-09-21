@@ -75,13 +75,25 @@ Or the REPL:
 (require '[its.loggers :as loggers])
 ```
 
-To disable the default logger `(loggers/remove :its.log/default)`.
+To disable the default logger:
 
-To register a new logger: `(loggers/set :my/logger foo-logger)`
+```clojure
+(loggers/remove :its.log/default)
+```
+
+To register a new logger:
+
+```clojure
+(loggers/set :my/logger foo-logger)
+```
 
 Registering a new logger to the same key will replace the old one.
 
-You can also use `(loggers/clear)` to clear all loggers.
+You can also clear all loggers with:
+
+```clojure
+(loggers/clear)
+```
 
 ## Log Entries
 
@@ -96,10 +108,12 @@ entry.  Order is not guaranteed.
 
 ## Dependencies
 
-Right now its-log depends on core.async.  If you aren't interested in using
+Currently its-log depends on core.async.  If you aren't interested in using
 core.async you can exclude them in your project.clj with something like:
 
-    :dependencies [its-log "x.x.x" :exclusions [org.clojure/core.async]]
+```clojure
+:dependencies [its-log "x.x.x" :exclusions [org.clojure/core.async]]
+```
 
 ## Target Audience
 
@@ -130,7 +144,7 @@ above produces these data structures:
 [#inst "2014-03-10T04:57:40.688-00:00" :error "This is an error message.  It will be seen."]
 ```
 
-which serialize to this plain text:
+which serialize to the equivalent plain text:
 
 ```
 [#inst "2014-03-10T04:57:30.005-00:00" :debug "This is a debug message.  It will be seen."]
