@@ -130,9 +130,10 @@ You might find its-log helpful specifically in situations like a multithreaded
 environment where stdout is lost.
 
 There is one common case where it will not work well right now which is in web
-workers.  Right now each web worker gets it's own isolated bus and the messages
-in the web workers never see the light of day.  I intend to fix this webworker
-issue when/if it becomes pressing in my work.  Pull requests welcome :)
+workers.  Right now each web worker gets it's own isolated set of loggers and
+the messages in the web workers never see the light of day.  I intend to fix
+this webworker issue when/if it becomes pressing in my work.  Pull requests
+welcome :)
 
 ### Logs as Data
 
@@ -193,10 +194,10 @@ The above produces this:
 
 ### Helper Functions
 
-There are four helper functions available in the `its-log` namespace
-corresponding to those same four levels: `log/debug`, `log/info`, `log/warn` and
-`log/error`.  These (and/or the its.bus versions) are how I log the vast
-majority of the time.
+You've already met the four helper functions available in the `its-log`
+namespace corresponding to those log to the four levels: `log/debug`,
+`log/info`, `log/warn` and `log/error`.  These are how I log the vast majority
+of the time.
 
 Behind the scenes, these are calling `log/log` which just takes one of the four
 log level keywords as it's first argument, e.g.:
@@ -213,31 +214,16 @@ As opposed to:
 (log/warn "uh oh")
 ```
 
-Most people will probably find the helper functions more "natural", at least at
-first.  The `log/log` remains helpful if you want to e.g. programatically
-determine the log level of a statement:
+Most of the time the helper functions will be the more natural and useful, at
+least at first.  The `log/log` function remains helpful if you want to
+e.g. programatically determine the log level of a statement:
 
 ```clojure
 (log/log (config/get :reactor-log-level) "reactor override engaged")
 ```
 
-In the real world you probably wouldn't call the `config/get` function inside
-each log call but hopefully you get the idea.
-
-If your fingers are tired and you would like even less typing, or perhaps you
-have an irrational aversion to the `/` character, you can always refer to the
-level helpers directly, something like:
-
-```clojure
-(ns my.app
-  (:require [its.log :as log :refer [log debug warn info error]]))
-
-(log :debug "whatever")
-(debug "whatever else")
-(info "Some handy info")
-(warn "This is bad.")
-(error "You didn't listen, did you?")
-```
+(In the real world you probably wouldn't call the `config/get` function inside
+ each log call but hopefully you get the idea....)
 
 ## Core.Async
 
