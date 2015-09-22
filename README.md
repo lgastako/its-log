@@ -225,6 +225,12 @@ e.g. programatically determine the log level of a statement:
 (In the real world you probably wouldn't call the `config/get` function inside
  each log call but hopefully you get the idea....)
 
+You can retrieve the current logging level with:
+
+```clojure
+(log/level)
+```
+
 ## Core.Async
 
 You can create a logger that will write log messages to a `core.async` channel
