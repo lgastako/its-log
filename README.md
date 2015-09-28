@@ -11,7 +11,7 @@ A simple Clojure/ClojureScript logging library.
 
 To use `its-log`, add the following to the `:dependencies` of your `project.clj`:
 
-    [its-log "3.0"]
+    [its-log "3.0.0"]
 
 Then require its-log, in a namespace:
 
