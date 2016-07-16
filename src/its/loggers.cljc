@@ -20,4 +20,3 @@
 
 (defn set-default []
   (reset! loggers initial-loggers))
-
